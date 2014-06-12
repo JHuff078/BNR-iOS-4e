@@ -23,6 +23,7 @@
 
 @implementation BNRDetailViewController
 
+#pragma mark - View things
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
@@ -65,6 +66,7 @@
     item.valueInDollars = [self.valueField.text intValue];
 }
 
+#pragma mark - Actions
 - (void)setItem:(BNRItem *)item {
     _item = item;
     self.navigationItem.title = _item.itemName;
