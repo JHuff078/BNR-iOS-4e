@@ -14,6 +14,7 @@
 @property NSString *serialNumber;
 @property int valueInDollars;
 @property NSDate *dateCreated;
+@property (nonatomic, copy) NSString *itemKey;
 
 + (instancetype)randomItem;
 
