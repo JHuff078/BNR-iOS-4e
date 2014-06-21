@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>48CA4654-7BA9-4484-812B-45B0C4FF89E1</string>
+	<key>IDESourceControlProjectName</key>
+	<string>TouchTracker</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>A747186B-94BC-49C5-A937-0FE85EE8B2F7</key>
+		<string>https://github.com/JHuff078/BNR-iOS-4e.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>TouchTracker/TouchTracker.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>A747186B-94BC-49C5-A937-0FE85EE8B2F7</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/JHuff078/BNR-iOS-4e.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>A747186B-94BC-49C5-A937-0FE85EE8B2F7</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>A747186B-94BC-49C5-A937-0FE85EE8B2F7</string>
+			<key>IDESourceControlWCCName</key>
+			<string>BNR-iOS-4e</string>
+		</dict>
+	</array>
+</dict>
+</plist>
