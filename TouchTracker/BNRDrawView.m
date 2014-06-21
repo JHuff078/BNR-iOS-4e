@@ -197,8 +197,10 @@
 #pragma mark - Pan messages
 
 - (void)moveLine:(UIPanGestureRecognizer *)gr {
+    UIMenuController *menu = [UIMenuController sharedMenuController];
+    
     //If we haven't selected a line, don't do anything
-    if (!self.selectedLine) {
+    if (!self.selectedLine || [menu isMenuVisible]) {
         return;
     }
     
