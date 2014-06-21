@@ -29,6 +29,13 @@
         self.backgroundColor = [UIColor grayColor];
         
         self.multipleTouchEnabled = YES;
+        
+        UITapGestureRecognizer *doubleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                              action:@selector(doubleTap:)];
+        
+        doubleTapRecognizer.delaysTouchesBegan = YES;
+        
+        [self addGestureRecognizer:doubleTapRecognizer];
     }
     
     return self;
@@ -92,6 +99,14 @@
         [self.linesInProgress removeObjectForKey:key];
     }
     
+    [self setNeedsDisplay];
+}
+
+- (void)doubleTap:(UIGestureRecognizer *)gr {
+    NSLog(@"Recoginzed a double tap");
+    
+    [self.linesInProgress removeAllObjects];
+    [self.finishedLines removeAllObjects];
     [self setNeedsDisplay];
 }
 
