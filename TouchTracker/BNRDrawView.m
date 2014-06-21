@@ -50,6 +50,10 @@
     return self;
 }
 
+- (BOOL)canBecomeFirstResponder {
+    return YES;
+}
+
 #pragma mark - Touch methods
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -127,6 +131,29 @@
     CGPoint point = [gr locationInView:self];
     self.selectedLine = [self lineAtPoint:point];
     
+    if (self.selectedLine) {
+        //Make ourselves the target of the menu item action messages
+        [self becomeFirstResponder];
+        
+        //Grab the menu controller
+        UIMenuController *menu = [UIMenuController sharedMenuController];
+        
+        //Create a new delete menu item
+        UIMenuItem *deleteItem = [[UIMenuItem alloc] initWithTitle:@"Delete"
+                                                        action:@selector(deleteLine:)];
+        menu.menuItems = @[deleteItem];
+        
+        //Tell the menu item where it should come from and show it
+        [menu setTargetRect:CGRectMake(point.x, point.y, 2, 2)
+                     inView:self];
+        [menu setMenuVisible:YES
+                    animated:YES];
+    } else {
+        //Hide the menu if no line is selected
+        [[UIMenuController sharedMenuController] setMenuVisible:NO
+                                                       animated:YES];
+    }
+    
     [self setNeedsDisplay];
 }
 
@@ -181,6 +208,16 @@
     
     //If nothing is close enough, we return nil
     return nil;
+}
+
+#pragma mark - UIMenuController messages
+
+- (void)deleteLine:(id)sender {
+    //Remove the selected line from the list of _finishedLines
+    [self.finishedLines removeObject:self.selectedLine];
+    
+    //Redraw everything
+    [self setNeedsDisplay];
 }
 
 @end
