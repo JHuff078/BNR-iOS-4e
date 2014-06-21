@@ -14,6 +14,8 @@
 @property (nonatomic, strong) NSMutableDictionary *linesInProgress;
 @property (nonatomic, strong) NSMutableArray *finishedLines;
 
+@property (nonatomic, weak) BNRLine *selectedLine;
+
 @end
 
 @implementation BNRDrawView
@@ -32,10 +34,17 @@
         
         UITapGestureRecognizer *doubleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                                               action:@selector(doubleTap:)];
-        
+        doubleTapRecognizer.numberOfTapsRequired = 2;
         doubleTapRecognizer.delaysTouchesBegan = YES;
         
         [self addGestureRecognizer:doubleTapRecognizer];
+        
+        UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                        action:@selector(tap:)];
+        tapRecognizer.delaysTouchesBegan = YES;
+        [tapRecognizer requireGestureRecognizerToFail:doubleTapRecognizer];
+        
+        [self addGestureRecognizer:tapRecognizer];
     }
     
     return self;
@@ -102,11 +111,22 @@
     [self setNeedsDisplay];
 }
 
+#pragma mark - Tap methods
+
 - (void)doubleTap:(UIGestureRecognizer *)gr {
     NSLog(@"Recoginzed a double tap");
     
     [self.linesInProgress removeAllObjects];
     [self.finishedLines removeAllObjects];
+    [self setNeedsDisplay];
+}
+
+- (void)tap:(UIGestureRecognizer *)gr {
+    NSLog(@"Recognized a single tap");
+    
+    CGPoint point = [gr locationInView:self];
+    self.selectedLine = [self lineAtPoint:point];
+    
     [self setNeedsDisplay];
 }
 
@@ -133,6 +153,34 @@
     for (NSValue *key in self.linesInProgress) {
         [self strokeLine:self.linesInProgress[key]];
     }
+    
+    if (self.selectedLine) {
+        [[UIColor greenColor] set];
+        
+        [self strokeLine:self.selectedLine];
+    }
+}
+
+- (BNRLine *)lineAtPoint:(CGPoint)p {
+    //Find a line close to p
+    for (BNRLine *l in self.finishedLines) {
+        CGPoint start = l.begin;
+        CGPoint end = l.end;
+        
+        //Check a few points on the line
+        for (float t = 0.0; t <= 1.0; t += 0.05) {
+            float x = start.x + t * (end.x - start.x);
+            float y = start.y + t * (end.y - start.y);
+            
+            //If the tapped point is within 20 points of this line, let's pick it
+            if (hypot(x - p.x, y - p.y) < 20.0) {
+                return l;
+            }
+        }
+    }
+    
+    //If nothing is close enough, we return nil
+    return nil;
 }
 
 @end
