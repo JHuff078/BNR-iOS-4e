@@ -18,6 +18,8 @@
 
 @implementation BNRDrawView
 
+#pragma mark - Init
+
 - (instancetype)initWithFrame:(CGRect)r {
     self = [super initWithFrame:r];
     
@@ -27,6 +29,38 @@
     }
     
     return self;
+}
+
+#pragma mark - Touch methods
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    UITouch *t = [touches anyObject];
+    
+    //Get location of touch in view's coordinate system
+    CGPoint location = [t locationInView:self];
+    
+    self.currentLine = [[BNRLine alloc] init];
+    self.currentLine.begin = location;
+    self.currentLine.end = location;
+    
+    [self setNeedsDisplay];
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    UITouch *t = [touches anyObject];
+    CGPoint location = [t locationInView:self];
+    
+    self.currentLine.end = location;
+    
+    [self setNeedsDisplay];
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    [self.finishedLines addObject:self.currentLine];
+    
+    self.currentLine = nil;
+    
+    [self setNeedsDisplay];
 }
 
 #pragma mark - Line methods
