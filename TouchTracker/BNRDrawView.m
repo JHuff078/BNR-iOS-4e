@@ -45,6 +45,11 @@
         [tapRecognizer requireGestureRecognizerToFail:doubleTapRecognizer];
         
         [self addGestureRecognizer:tapRecognizer];
+        
+        UILongPressGestureRecognizer *pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self
+                                                                                                      action:@selector(longPress:)];
+        
+        [self addGestureRecognizer:pressRecognizer];
     }
     
     return self;
@@ -54,7 +59,7 @@
     return YES;
 }
 
-#pragma mark - Touch methods
+#pragma mark - Touch messages
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     //Log statement to see the order of the events
@@ -115,7 +120,7 @@
     [self setNeedsDisplay];
 }
 
-#pragma mark - Tap methods
+#pragma mark - Tap messages
 
 - (void)doubleTap:(UIGestureRecognizer *)gr {
     NSLog(@"Recoginzed a double tap");
@@ -157,7 +162,24 @@
     [self setNeedsDisplay];
 }
 
-#pragma mark - Line methods
+#pragma mark - Press messages
+
+- (void)longPress:(UIGestureRecognizer *)gr {
+    if (gr.state == UIGestureRecognizerStateBegan) {
+        CGPoint point = [gr locationInView:self];
+        self.selectedLine = [self lineAtPoint:point];
+        
+        if (self.selectedLine) {
+            [self.linesInProgress removeAllObjects];
+        }
+    } else if (gr.state == UIGestureRecognizerStateEnded) {
+        self.selectedLine = nil;
+    }
+    
+    [self setNeedsDisplay];
+}
+
+#pragma mark - Line messages
 
 - (void)strokeLine:(BNRLine *)line {
     UIBezierPath *bp = [UIBezierPath bezierPath];
