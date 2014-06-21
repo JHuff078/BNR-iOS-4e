@@ -11,7 +11,7 @@
 
 @interface BNRDrawView ()
 
-@property (nonatomic, strong) BNRLine *currentLine;
+@property (nonatomic, strong) NSMutableDictionary *linesInProgress;
 @property (nonatomic, strong) NSMutableArray *finishedLines;
 
 @end
@@ -24,8 +24,11 @@
     self = [super initWithFrame:r];
     
     if (self) {
+        self.linesInProgress = [[NSMutableDictionary alloc] init];
         self.finishedLines = [[NSMutableArray alloc] init];
         self.backgroundColor = [UIColor grayColor];
+        
+        self.multipleTouchEnabled = YES;
     }
     
     return self;
@@ -34,31 +37,60 @@
 #pragma mark - Touch methods
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    UITouch *t = [touches anyObject];
+    //Log statement to see the order of the events
+    NSLog(@"%@", NSStringFromSelector(_cmd));
     
-    //Get location of touch in view's coordinate system
-    CGPoint location = [t locationInView:self];
-    
-    self.currentLine = [[BNRLine alloc] init];
-    self.currentLine.begin = location;
-    self.currentLine.end = location;
+    for (UITouch *t in touches) {
+        CGPoint location = [t locationInView:self];
+        
+        BNRLine *line = [[BNRLine alloc] init];
+        line.begin = location;
+        line.end = location;
+        
+        NSValue *key = [NSValue valueWithNonretainedObject:t];
+        self.linesInProgress[key] = line;
+    }
     
     [self setNeedsDisplay];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    UITouch *t = [touches anyObject];
-    CGPoint location = [t locationInView:self];
+    //Log statement to see the order of the events
+    NSLog(@"%@", NSStringFromSelector(_cmd));
     
-    self.currentLine.end = location;
+    for (UITouch *t in touches) {
+        NSValue *key = [NSValue valueWithNonretainedObject:t];
+        BNRLine *line = self.linesInProgress[key];
+        
+        line.end = [t locationInView:self];
+    }
     
     [self setNeedsDisplay];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    [self.finishedLines addObject:self.currentLine];
+    //Log statement to see the order of the events
+    NSLog(@"%@", NSStringFromSelector(_cmd));
     
-    self.currentLine = nil;
+    for (UITouch *t in touches) {
+        NSValue *key = [NSValue valueWithNonretainedObject:t];
+        BNRLine *line = self.linesInProgress[key];
+
+        [self.finishedLines addObject:line];
+        [self.linesInProgress removeObjectForKey:key];
+    }
+    
+    [self setNeedsDisplay];
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+    //Log statement to see the order of the events
+    NSLog(@"%@", NSStringFromSelector(_cmd));
+    
+    for (UITouch *t in touches) {
+        NSValue *key = [NSValue valueWithNonretainedObject:t];
+        [self.linesInProgress removeObjectForKey:key];
+    }
     
     [self setNeedsDisplay];
 }
@@ -82,10 +114,9 @@
         [self strokeLine:line];
     }
     
-    if (self.currentLine) {
-        //If there is a line currently being drawn, do it in red
-        [[UIColor redColor] set];
-        [self strokeLine:self.currentLine];
+    [[UIColor redColor] set];
+    for (NSValue *key in self.linesInProgress) {
+        [self strokeLine:self.linesInProgress[key]];
     }
 }
 
