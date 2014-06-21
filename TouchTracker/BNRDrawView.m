@@ -9,7 +9,9 @@
 #import "BNRDrawView.h"
 #import "BNRLine.h"
 
-@interface BNRDrawView ()
+@interface BNRDrawView () <UIGestureRecognizerDelegate>
+
+@property (nonatomic, strong) UIPanGestureRecognizer *moveRecognizer;
 
 @property (nonatomic, strong) NSMutableDictionary *linesInProgress;
 @property (nonatomic, strong) NSMutableArray *finishedLines;
@@ -50,6 +52,12 @@
                                                                                                       action:@selector(longPress:)];
         
         [self addGestureRecognizer:pressRecognizer];
+        
+        self.moveRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self
+                                                                      action:@selector(moveLine:)];
+        self.moveRecognizer.delegate = self;
+        self.moveRecognizer.cancelsTouchesInView = NO;
+        [self addGestureRecognizer:self.moveRecognizer];
     }
     
     return self;
@@ -57,6 +65,13 @@
 
 - (BOOL)canBecomeFirstResponder {
     return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    if (gestureRecognizer == self.moveRecognizer) {
+        return YES;
+    }
+    return NO;
 }
 
 #pragma mark - Touch messages
@@ -177,6 +192,39 @@
     }
     
     [self setNeedsDisplay];
+}
+
+#pragma mark - Pan messages
+
+- (void)moveLine:(UIPanGestureRecognizer *)gr {
+    //If we haven't selected a line, don't do anything
+    if (!self.selectedLine) {
+        return;
+    }
+    
+    //When the pan recognizer changes its position…
+    if (gr.state == UIGestureRecognizerStateChanged) {
+        //How far has the pan moved?
+        CGPoint translation = [gr translationInView:self];
+        
+        //Add the translation to the beginning and end points of the line
+        CGPoint begin = self.selectedLine.begin;
+        CGPoint end = self.selectedLine.end;
+        begin.x += translation.x;
+        begin.y += translation.y;
+        end.x += translation.x;
+        end.y += translation.y;
+        
+        //Set the new beginning and endpoints of the line
+        self.selectedLine.begin = begin;
+        self.selectedLine.end = end;
+        
+        //Redraw the screen
+        [self setNeedsDisplay];
+        
+        [gr setTranslation:CGPointZero
+                    inView:self];
+    }
 }
 
 #pragma mark - Line messages
