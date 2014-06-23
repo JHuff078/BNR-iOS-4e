@@ -82,6 +82,22 @@
     
     //The image view was pointed to by the imageView property
     self.imageView = iv;
+    
+    NSDictionary *nameMap = @{@"imageView": self.imageView,
+                              @"dateLable": self.dateLabel,
+                                @"toolbar": self.toolbar};
+    
+    //imageView is 0 pts form superview at left and right edges
+    NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[imageView]-0-|"
+                                                                             options:0
+                                                                             metrics:nil
+                                                                               views:nameMap];
+    
+    //imageView is 8 pts from dateLabel at its top edge and 8 pts from toolbar at its bottom edge
+    NSArray *veritcalConstrains = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[dateLabel]-[imageView]-[toolbar]"
+                                                                          options:0
+                                                                          metrics:nil
+                                                                            views:nameMap];
 }
 
 #pragma mark - Actions
