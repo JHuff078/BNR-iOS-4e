@@ -84,7 +84,7 @@
     self.imageView = iv;
     
     NSDictionary *nameMap = @{@"imageView": self.imageView,
-                              @"dateLable": self.dateLabel,
+                              @"dateLabel": self.dateLabel,
                                 @"toolbar": self.toolbar};
     
     //imageView is 0 pts form superview at left and right edges
@@ -94,10 +94,13 @@
                                                                                views:nameMap];
     
     //imageView is 8 pts from dateLabel at its top edge and 8 pts from toolbar at its bottom edge
-    NSArray *veritcalConstrains = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[dateLabel]-[imageView]-[toolbar]"
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[dateLabel]-[imageView]-[toolbar]"
                                                                           options:0
                                                                           metrics:nil
                                                                             views:nameMap];
+    
+    [self.view addConstraints:horizontalConstraints];
+    [self.view addConstraints:verticalConstraints];
 }
 
 #pragma mark - Actions
