@@ -66,6 +66,24 @@
     item.valueInDollars = [self.valueField.text intValue];
 }
 
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    UIImageView *iv = [[UIImageView alloc] initWithImage:nil];
+    
+    //The contentMode of the image view in the XIB was Aspect Fit:
+    iv.contentMode = UIViewContentModeScaleAspectFit;
+    
+    //Do not produce a translated constraint for this view
+    iv.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    //The image view was a subview of the view
+    [self.view addSubview:iv];
+    
+    //The image view was pointed to by the imageView property
+    self.imageView = iv;
+}
+
 #pragma mark - Actions
 - (void)setItem:(BNRItem *)item {
     _item = item;
