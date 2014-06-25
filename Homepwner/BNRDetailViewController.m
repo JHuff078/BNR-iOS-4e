@@ -25,6 +25,34 @@
 
 @implementation BNRDetailViewController
 
+#pragma mark - Initalizers
+- (instancetype)initForNewItem:(BOOL)isNew {
+    self = [super initWithNibName:nil
+                           bundle:nil];
+    
+    if (self) {
+        UIBarButtonItem *doneItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                  target:self
+                                                                                  action:@selector(save:)];
+        self.navigationItem.rightBarButtonItem = doneItem;
+        
+        UIBarButtonItem *cancelItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                                    target:self
+                                                                                    action:@selector(cancel:)];
+        self.navigationItem.leftBarButtonItem = cancelItem;
+        
+    }
+    
+    return self;
+}
+
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+    @throw [NSException exceptionWithName:@"Wrong initializer"
+                                   reason:@"Use initForNewItem"
+                                 userInfo:nil];
+    return nil;
+}
+
 #pragma mark - View things
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -190,7 +218,6 @@
 }
 
 #pragma mark - Rotation Things
-
 - (void)prepareViewsForOrientation:(UIInterfaceOrientation)orientation {
     //Is it an iPad? No prepare necessary
     if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
@@ -212,7 +239,6 @@
 }
 
 #pragma mark - popOverController Things
-
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
     NSLog(@"User dismissed popover");
     self.imagePickerPopover = nil;

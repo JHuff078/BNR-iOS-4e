@@ -68,7 +68,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    BNRDetailViewController *detailViewController = [[BNRDetailViewController alloc] init];
+    BNRDetailViewController *detailViewController = [[BNRDetailViewController alloc] initForNewItem:NO];
     
     NSArray *items = [[BNRItemStore sharedStore] allItems];
     BNRItem *selectedItem = items[indexPath.row];
@@ -84,16 +84,16 @@
 - (IBAction)addNewItem:(id)sender {
     //Create a new BNRITem and add it to the store
     BNRItem *newItem = [[BNRItemStore sharedStore] createItem];
+
+    BNRDetailViewController *detailViewController = [[BNRDetailViewController alloc] initForNewItem:YES];
     
-    //Figure out where that item is int he array
-    NSInteger lastRow = [[[BNRItemStore sharedStore] allItems] indexOfObject:newItem];
+    detailViewController.item = newItem;
     
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:lastRow
-                                                inSection:0];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:detailViewController];
     
-    //Insert this new row into the table.
-    [self.tableView insertRowsAtIndexPaths:@[indexPath]
-                          withRowAnimation:UITableViewRowAnimationTop];
+    [self presentViewController:navController
+                       animated:YES
+                     completion:nil];
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
